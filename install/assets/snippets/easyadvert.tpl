@@ -2,7 +2,7 @@
 /**
  * EasyAdvertising
  *
- * снипет вывода рекламы на сайте
+ * snippet for advertising on the site
  *
  * @category	snippet
  * @version 	1.02 
@@ -10,25 +10,26 @@
  * @internal	@properties
  * @internal	@modx_category Content
  */
+<?php
 /*
-*  EasyAdvertising - снипет вывода рекламы на сайте
+*  EasyAdvertising - snippet for advertising on the site
 *  Версия 1.02 (17.05.2012)
 *  Авторы:  Леха.com
 *           thebat053
 *  ver.1.02 lo-pata (s.vlksm@gmail.com)
 *
 *  Параметры:
-*  limit	- сколько блоков выводить
-*  area		- рекламная зона
-*  sort		- "rnd", по-умолчанию сортируется по позиции
-*  regCss	- подключение стилей из чанка, можно использовать @FILE: для подключения из файла
-*  regJs	- аналогично regCss, только подключение javascript
-*  noJs		- по-умолчанию для показа flash-баннеров подключается swfobject.js, 
-*				этот параметр позволяет его отключить
-*				(путь к файлу assets/modules/easyadvertising/flash)
-*  noCss	- по-умолчанию для показа flash-баннеров подключается eadvt.css, 
-*				этот параметр позволяет его отключить
-*				(путь к файлу assets/modules/easyadvertising/css)
+*  limit	- as the output unit
+*  area		- advertising area
+*  sort		- "rnd", Default is sorted by position
+*  regCss	- Connection styles of chunk, you can use @FILE: to connect from file
+*  regJs	- similarly regCss, only connection javascript
+*  noJs		- по-default display flash-banners connectedswfobject.js, 
+*				This option allows you to turn it off
+*				(the path to the fileassets/modules/easyadvertising/flash)
+*  noCss	- The default display for flash-banners connected eadvt.css, 
+*				This option allows you to turn it off
+*				(the path to the file assets/modules/easyadvertising/css)
 */
 if (!class_exists("EasyAdvertising")) {
     class EasyAdvertising {
@@ -79,7 +80,7 @@ if (!class_exists("EasyAdvertising")) {
 		}
 		
 		function get_banner($row, $modUrl, $protocol="http://") {
-			$lnk = '<a target="_blank" href="'.
+			$lnk = '<a target="_blank" rel="nofollow" href="'.
 				($row['jump_counted'] == 1 ? $protocol.$_SERVER['HTTP_HOST'].'/click.php?id='.$row['id'] : $row['link']).'">';
 			$row['content'] = htmlspecialchars_decode($row['content']);
 			if (!is_file($row['content'])) {	// html-код
@@ -98,7 +99,7 @@ if (!class_exists("EasyAdvertising")) {
 							<img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" 
 							alt="Get Adobe Flash player" /></a>';
 					
-					//рисуем ссылку, если нужно считать переходы или если заполнено поле "линк" (т.е. не зашита в баннер)
+					//draw a link if you need to consider if the impression or fill in the "Link" (ie, not sewn in the banner)
 					if ($row['jump_counted'] == 1 || !empty($row['link'])) { 
 						$banner = '<div id="eadvt_wrapper'.$row['id'].'">'.$lnk.'</a><div id="eadvt'.$row['id'].'">'.$alt.'</div></div>';
 					} else 
@@ -108,7 +109,7 @@ if (!class_exists("EasyAdvertising")) {
 					$this->js .= "swfobject.embedSWF('".$row['content']."', 'eadvt".$row['id']."', '".$fl[0]."', '".$fl[1]."', '6.0.65', '".$modUrl."flash/expressInstall.swf', {}, {wmode:'opaque',quality:'high'});\n";
 					$this->css .= "#eadvt_wrapper".$row['id']." {width:".$fl[0]."px; height:".$fl[1]."px} \n";
 				} else 
-					$banner = $lnk.'<img src="'.$row['content'].'" alt="banner '.$row['id'].'" /></a>';	
+					$banner = $lnk.'<img class="img-responsive" src="'.$row['content'].'" alt="banner '.$row['id'].'" /></a>';	
 			
             }
             
@@ -178,3 +179,4 @@ if (isset($regJs) && !empty($regJs)) {
 }	
 
 return $out;
+?>
